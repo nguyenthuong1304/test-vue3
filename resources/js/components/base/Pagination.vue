@@ -1,99 +1,166 @@
 <template>
-  <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-    <div class="flex-1 flex justify-between sm:hidden">
-      <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-        Previous
-      </a>
-      <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-        Next
-      </a>
-    </div>
-    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-      <div>
-        <p class="text-sm text-gray-700">
-          Hiển
-          <span class="font-medium">1</span>
-          đến
-          <span class="font-medium">10</span>
-          của
-          <span class="font-medium">97</span>
-          kết quả
-        </p>
-      </div>
-      <div>
-        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-          <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-            <span class="sr-only">Previous</span>
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
+  <div class="min-w-max">
+    <section class="flex justify-between bg-white rounded-lg border border-gray-200 px-10 py-3 text-gray-700 font-montserrat">
+      <ul class="flex items-center">
+        <li class="pr-6" v-if="hasPrev()">
+          <a href="#" @click.prevent="changePage(prevPage)">
+            <div class="flex items-center justify-center hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6">
+              <div class="transform -rotate-45">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </div>
+            </div>
           </a>
-          <a
-            href="#"
-            class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-            v-for="page in pages"
-            :key="page.name"
-          >
-            {{ page.name }}
+        </li>
+        <li class="pr-6" v-if="hasFirst()">
+          <a href="#" @click.prevent="changePage(1)">
+            <div class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+          <span class="transform -rotate-45">
+            1
+          </span>
+            </div>
           </a>
-          <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-            <span class="sr-only">Next</span>
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
+        </li>
+        <li class="pr-6" v-if="hasFirst()">...</li>
+        <li class="pr-6" v-for="page in pages">
+          <a href="#" @click.prevent="changePage(page)">
+            <div :class="{'bg-gradient-to-r from-blue-400 to-indigo-400': current === page}"
+                 class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+              <span class="transform -rotate-45">{{ page }}</span>
+            </div>
           </a>
-        </nav>
-      </div>
-    </div>
+        </li>
+        <li class="pr-6" v-if="hasLast()">...</li>
+        <li class="pr-6" v-if="hasLast()">
+          <a href="#" @click.prevent="changePage(totalPages)">
+            <div class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+          <span class="transform -rotate-45">
+            {{ totalPages }}
+          </span>
+            </div>
+          </a>
+        </li>
+        <li class="pr-6" v-if="hasNext()">
+          <a href="#" @click.prevent="changePage(nextPage)">
+            <div class="flex items-center justify-center hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6">
+              <div class="transform -rotate-45">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+<!--      <div class="flex items-center">-->
+<!--        <div class="pr-2 text-gray-400 font-medium">-->
+<!--          <span id="text-before-input">-->
+<!--            {{ textBeforeInput }}-->
+<!--          </span>-->
+<!--        </div>-->
+<!--        <div class="w-14 rounded-md border border-indigo-400 px-1 py-1">-->
+<!--          <input v-model.number="input" class="w-12 focus:outline-none px-2" type="text">-->
+<!--        </div>-->
+<!--        <div @click.prevent="changePage(input)" class="flex items-center pl-4 font-medium cursor-pointer">-->
+<!--          <span id="text-after-input">-->
+<!--            {{ textAfterInput }}-->
+<!--          </span>-->
+<!--          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">-->
+<!--            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>-->
+<!--          </svg>-->
+<!--        </div>-->
+<!--      </div>-->
+    </section>
   </div>
 </template>
 
 <script>
-export default {
+import '@ocrv/vue-tailwind-pagination/styles'
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: 'Pagination',
   props: {
-    maxVisibleButtons: {
+    current: {
       type: Number,
-      required: false,
-      default: 3
+      default: 1
     },
-    totalPages: {
+    total: {
       type: Number,
-      required: true
+      default: 0
     },
     perPage: {
       type: Number,
-      required: true
+      default: 9
     },
-    currentPage: {
+    pageRange: {
       type: Number,
-      required: true
+      default: 2
+    },
+    textBeforeInput: {
+      type: String,
+      default: 'Go to page'
+    },
+    textAfterInput: {
+      type: String,
+      default: 'Go'
+    }
+  },
+  data() {
+    return {
+      input: '',
+    }
+  },
+  methods: {
+    hasFirst: function () {
+      return this.rangeStart !== 1
+    },
+    hasLast: function () {
+      return this.rangeEnd < this.totalPages
+    },
+    hasPrev: function () {
+      return this.current > 1
+    },
+    hasNext: function () {
+      return this.current < this.totalPages
+    },
+    changePage: function (page) {
+      if (page > 0 && page <= this.totalPages) {
+        this.$emit('page-changed', page)
+      }
     }
   },
   computed: {
-    startPage() {
-      if (this.currentPage === 1) {
-        return 1;
+    pages: function () {
+      let pages = []
+      for (let i = this.rangeStart; i <= this.rangeEnd; i++) {
+        pages.push(i)
       }
-      if (this.currentPage === this.totalPages) {
-        return this.totalPages - this.maxVisibleButtons;
-      }
-      return this.currentPage - 1;
+      return pages
     },
-    pages() {
-      const range = [];
-      for (
-        let i = this.startPage;
-        i <= Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
-        i++
-      ) {
-        range.push({
-          name: i,
-          isDisabled: i === this.currentPage
-        });
-      }
-      return range;
+    rangeStart: function () {
+      let start = this.current - this.pageRange
+
+      return (start > 0) ? start : 1
     },
+    rangeEnd: function () {
+      let end = this.current + this.pageRange
+
+      return (end < this.totalPages) ? end : this.totalPages
+    },
+    totalPages: function () {
+      return Math.ceil(this.total / this.perPage)
+    },
+    nextPage: function () {
+      return this.current + 1
+    },
+    prevPage: function () {
+      return this.current - 1
+    }
   }
-};
+});
 </script>

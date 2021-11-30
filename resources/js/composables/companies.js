@@ -9,11 +9,11 @@ export default function useCompanies() {
   const errors = ref('')
 
   const getCompanies = async (params = {}) => {
-    console.log(params)
     let response = await axios.get('/api/v1/companies', {
       params
     })
     companies.value = response.data.data;
+    companies.meta = response.data.meta;
   }
 
   const getCompany = async (id) => {
@@ -52,7 +52,6 @@ export default function useCompanies() {
   const destroyCompany = async (id) => {
     await axios.delete('/api/v1/companies/' + id)
   }
-
 
   return {
     companies,

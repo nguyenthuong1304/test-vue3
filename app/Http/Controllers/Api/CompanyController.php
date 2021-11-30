@@ -23,7 +23,9 @@ class CompanyController extends Controller
             $q->when($request->name, fn ($q1) => $q1->where('name', 'like', "%$request->name%"));
             $q->when($request->code, fn ($q1) => $q1->where('code', 'like', "%$request->code%"));
             $q->when($request->founding_date, fn ($q1) => $q1->where('founding_date', $request->founding_date));
-        })->paginate(5);
+        })
+            ->withCount('users')
+            ->paginate(5);
 
         return CompanyResource::collection($companies);
     }
@@ -49,6 +51,8 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
+        $company->load('users');
+
         return new CompanyResource($company);
     }
 

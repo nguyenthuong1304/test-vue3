@@ -83,6 +83,9 @@
           <span class="text-xs font-medium tracking-wider leading-4 text-left text-gray-500 uppercase">Ngày thành lập</span>
         </th>
         <th class="px-6 py-3 bg-gray-50">
+          <span class="text-xs font-medium tracking-wider leading-4 text-left text-gray-500 uppercase">Số nhân viên</span>
+        </th>
+        <th class="px-6 py-3 bg-gray-50">
           <span class="text-xs font-medium tracking-wider leading-4 text-left text-gray-500 uppercase">image</span>
         </th>
         <th class="px-6 py-3 bg-gray-50"></th>
@@ -102,6 +105,9 @@
             {{ item.founding_date }}
           </td>
           <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+            {{ item.users_count }}
+          </td>
+          <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
             {{ item.image }}
           </td>
           <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
@@ -118,7 +124,12 @@
       </template>
       </tbody>
       <tfoot class="min-w-full border divide-y divide-gray-200">
-      <Pagination :total-pages="10" :current-page="1" :per-page="5"></Pagination>
+        <Pagination
+          :total="params.total"
+          :current="params.current"
+          :perPage="params.perPage"
+          @page-changed="handleChangePage"
+        />
       </tfoot>
     </table>
 
@@ -143,9 +154,22 @@ export default {
       'founding_date': '',
       'created_from': null,
       'created_to': null,
+      'total' : 0,
+      'current': 1,
+      'perPage': 5,
     })
 
-    onMounted(getCompanies)
+    const search = async (page = 1) => {
+      let { total, perPage, ...paramsSearch } = params
+      await getCompanies({
+        ...paramsSearch,
+        page: typeof page === 'number' ? page : params.current,
+      })
+      params.total = companies.meta.total;
+      params.perPage = companies.meta.per_page;
+      params.current = typeof page === 'number' ? page : params.current;
+    }
+    onMounted(search)
 
     const deleteCompany = async (id) => {
       if (!window.confirm('Are you sure?')) {
@@ -155,15 +179,16 @@ export default {
       await getCompanies();
     }
 
-    const search = async () => {
-      await getCompanies({ ...params })
+    const handleChangePage = ($event) => {
+      search($event)
     }
 
     return {
       companies,
       deleteCompany,
       search,
-      params
+      params,
+      handleChangePage
     }
   }
 }

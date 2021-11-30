@@ -6,7 +6,7 @@ import CompanyEdit from "../components/companies/CompanyEdit";
 
 const routes = [
   {
-    path: '/dashboard',
+    path: '/',
     name: 'companies.index',
     component: CompaniesIndex
   },

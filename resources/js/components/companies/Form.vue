@@ -6,7 +6,7 @@
   <form class="space-y-6" @submit.prevent="saveCompany">
     <div class="space-y-4 rounded-md shadow-sm">
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <label for="name" class="block text-sm font-medium text-gray-700">Tên công ty</label>
         <div class="mt-1">
           <input type="text" name="name" id="name"
            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -15,16 +15,16 @@
       </div>
 
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <label for="email" class="block text-sm font-medium text-gray-700">Mã công ty</label>
         <div class="mt-1">
           <input type="text" name="email" id="email"
            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-           v-model="form.email">
+           v-model="form.code">
         </div>
       </div>
 
       <div>
-        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+        <label for="address" class="block text-sm font-medium text-gray-700">Địa chỉ</label>
         <div class="mt-1">
           <input type="text" name="address" id="address"
            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -33,11 +33,29 @@
       </div>
 
       <div>
-        <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
+        <label for="founding_date" class="block text-sm font-medium text-gray-700">Ngày thành lập</label>
         <div class="mt-1">
-          <input type="text" name="website" id="website"
+          <input type="date" name="founding_date" id="founding_date"
+                 class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                 v-model="form.founding_date">
+        </div>
+      </div>
+
+      <div>
+        <label for="image" class="block text-sm font-medium text-gray-700">Ảnh</label>
+        <div class="mt-1">
+          <input type="text" name="image" id="image"
+                 class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                 v-model="form.image" disabled>
+        </div>
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-700">Mô tả</label>
+        <div class="mt-1">
+          <textarea type="text" name="description" id="description"
              class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-             v-model="form.website">
+             v-model="form.description"></textarea>
         </div>
       </div>
     </div>
@@ -65,10 +83,12 @@ export default {
   setup(props) {
     let form = reactive({
       'id': null,
-      'name': '',
-      'email': '',
-      'address': '',
-      'website': '',
+      'name': null,
+      'code': null,
+      'description': null,
+      'address': null,
+      'image': null,
+      'founding_date': null,
     })
 
     const { errors, company, getCompany, updateCompany, storeCompany } = useCompanies()

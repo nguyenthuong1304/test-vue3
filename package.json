@@ -21,6 +21,7 @@
         "tailwindcss": "^2.0.2"
     },
     "dependencies": {
+        "@ocrv/vue-tailwind-pagination": "0.0.4",
         "acorn": "^8.6.0",
         "vue": "^3.2.23",
         "vue-loader": "^16.8.3",
